@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин - Продукты</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .product-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 3px solid #f0f0f0;
+        }
+        
+        .product-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .product-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .product-count {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .buy-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .buy-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .buy-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .buy-button:disabled:hover {
+            transform: none;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 1200px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Наш Магазин</h1>
+            <p>Откройте для себя лучшие продукты</p>
+        </div>
+        
+        <div id="products-container">
+            <div class="loading">Загрузка продуктов...</div>
+        </div>
+    </div>
+
+    <script>
+        // Функция для загрузки продуктов
+        async function loadProducts() {
+            try {
+                const response = await fetch('/store/get');
+                const data = await response.json();
+                
+                console.log('Полученные данные:', data); // Отладочная информация
+                
+                if (data.products && data.products.length > 0) {
+                    displayProducts(data.products);
+                } else {
+                    document.getElementById('products-container').innerHTML = 
+                        '<div class="error">Продукты не найдены</div>';
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки продуктов:', error);
+                document.getElementById('products-container').innerHTML = 
+                    '<div class="error">Ошибка загрузки продуктов</div>';
+            }
+        }
+        
+        // Функция для отображения продуктов
+        function displayProducts(products) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            if (!products || products.length === 0) {
+                container.innerHTML = '<div class="error">Продукты не найдены</div>';
+                return;
+            }
+            
+            // Применяем класс products-grid к контейнеру
+            container.className = 'products-grid';
+            console.log('Применен класс products-grid к контейнеру');
+            console.log('Количество продуктов для отображения:', products.length);
+            
+            products.forEach(product => {
+                console.log('Обрабатываем продукт:', product); // Отладочная информация
+                
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                // Создаем изображение (если есть) или placeholder
+                let imageSrc = 'https://via.placeholder.com/200x200/667eea/ffffff?text=Нет+фото';
+                
+                if (product.image && product.image.length > 0) {
+                    try {
+                        // Изображение уже в формате base64, просто добавляем префикс
+                        imageSrc = `data:image/jpeg;base64,${product.image}`;
+                        console.log('Изображение загружено:', imageSrc.substring(0, 100) + '...');
+                    } catch (e) {
+                        console.warn('Ошибка обработки изображения:', e);
+                        imageSrc = 'https://via.placeholder.com/200x200/ff6b6b/ffffff?text=Ошибка+изображения';
+                    }
+                } else {
+                    console.log('Изображение отсутствует для продукта:', product.name);
+                }
+                
+                // Получаем количество товара, учитывая возможное NULL значение
+                let count = 0;
+                if (product.count) {
+                    if (typeof product.count === 'object' && product.count.Valid !== undefined) {
+                        count = product.count.Valid ? product.count.Int64 : 0;
+                    } else if (typeof product.count === 'number') {
+                        count = product.count;
+                    }
+                }
+                
+                productCard.innerHTML = `
+                    <img src="${imageSrc}" alt="${product.name || 'Продукт'}" class="product-image">
+                    <div class="product-name">${product.name || 'Без названия'}</div>
+                    <div class="product-description">${product.description || 'Описание отсутствует'}</div>
+                    <div class="product-price">${product.price || 0} ₽</div>
+                    <div class="product-count">В наличии: ${count} шт.</div>
+                    <button class="buy-button" onclick="buyProduct(${product.id || product.ID || 0})" ${count <= 0 ? 'disabled' : ''}>
+                        ${count > 0 ? 'Купить' : 'Нет в наличии'}
+                    </button>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+        
+        // Функция для покупки продукта
+        async function buyProduct(productId) {
+            if (!productId || productId === 0) {
+                alert('Неверный ID продукта');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/store/buy/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        customer_email: 'test@example.com',
+                        address: 'Тестовый адрес',
+                        ids_product: [productId],
+                        price: 0 // Цена будет рассчитана на сервере
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.isBought) {
+                    alert('Продукт успешно куплен!');
+                    // Перезагружаем продукты
+                    loadProducts();
+                } else {
+                    alert('Ошибка при покупке продукта');
+                }
+            } catch (error) {
+                console.error('Ошибка покупки:', error);
+                alert('Ошибка при покупке продукта');
+            }
+        }
+        
+        // Загружаем продукты при загрузке страницы
+        document.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
+</body>
+</html>

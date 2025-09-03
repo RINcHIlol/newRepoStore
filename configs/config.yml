@@ -1,0 +1,10 @@
+port: "8080"
+
+#локалка
+#поменять данные на данные из бд на серваке(поменять username, password, dbname)
+db:
+  host: "localhost"
+  port: "3306"
+  username: "root"
+  password: "3306"
+  dbname: "store"
