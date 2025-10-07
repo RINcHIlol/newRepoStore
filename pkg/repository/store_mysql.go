@@ -17,8 +17,8 @@ func NewStoreMySql(db *sqlx.DB) *StoreMySql {
 
 func (p *StoreMySql) CreateProduct(product models.Product) (bool, error) {
 	query := `
-		INSERT INTO products (order_num, name, price, description, image, count)
-		VALUES (?, ?, ?, ?, ?, ?)
+		INSERT INTO products (name, price, description, image, count)
+		VALUES (?, ?, ?, ?, ?)
 	`
 
 	count := 0
@@ -223,7 +223,7 @@ func (p *StoreMySql) CreateOrder(order models.OrderRequest) (int, error) {
 func (p *StoreMySql) GetOrderById(orderId int) (models.Order, error) {
 	var order models.Order
 
-	query := `SELECT id, customer_email, address, created_at FROM orders WHERE id = ?`
+	query := `SELECT id, customer_email, address, price, created_at FROM orders WHERE id = ?`
 
 	err := p.db.Get(&order, query, orderId)
 	if err != nil {

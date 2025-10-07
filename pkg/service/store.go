@@ -1,13 +1,11 @@
 package service
 
 import (
-	"fmt"
-	"gopkg.in/mail.v2"
-	"os"
-	"storeApi"
-	"storeApi/models"
-	"storeApi/pkg/mailer"
-	"storeApi/pkg/repository"
+    "gopkg.in/mail.v2"
+    "os"
+    "storeApi/models"
+    "storeApi/pkg/mailer"
+    "storeApi/pkg/repository"
 )
 
 type StoreService struct {
@@ -34,11 +32,11 @@ func (s *StoreService) GetProductById(productId int) (models.Product, error) {
 	return s.repo.GetProductById(productId)
 }
 
-func (s *StoreService) BuyProduct(orderReq models.OrderRequest) (bool, error) {
+func (s *StoreService) BuyProduct(orderReq models.OrderRequest) (int, error) {
 	var finalPrice float64
 	orderId, err := s.repo.CreateOrder(orderReq)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
 	order, err := s.repo.GetOrderById(orderId)
@@ -48,30 +46,27 @@ func (s *StoreService) BuyProduct(orderReq models.OrderRequest) (bool, error) {
 		//product, err := s.repo.DeleteProductById(orderReq.IdsProduct[i])
 		product, price, err := s.repo.ReduceCountProduct(orderReq.Products[i].ID, orderReq.Products[i].Count)
 		if err != nil {
-			return false, err
+			return 0, err
 		}
 		finalPrice += price
 		products = append(products, models.ProductCount{product, orderReq.Products[i].Count, price})
 	}
 
-	err = storeApi.PaymentEvent(int(finalPrice * 100)) // сумма в центах
-	if err != nil {
-		return false, fmt.Errorf("оплата не прошла: %v", err)
-	}
+    // Оплата подтверждается на фронтенде через Stripe Elements перед созданием заказа
 
 	customerMsg, customerFiles, err := mailer.MailToCustomer(products, order, finalPrice)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
 	sellerMsg, sellerFiles, err := mailer.MailToSeller(products, order, finalPrice)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
 	d := mail.NewDialer("smtp.gmail.com", 587, "galimatron229@gmail.com", "wplgvcwvcsvxxfxp")
 	if err := d.DialAndSend(customerMsg, sellerMsg); err != nil {
-		return false, err
+		return 0, err
 	}
 	for _, f := range customerFiles {
 		f.Close()
@@ -82,7 +77,7 @@ func (s *StoreService) BuyProduct(orderReq models.OrderRequest) (bool, error) {
 		os.Remove(f.Name())
 	}
 
-	return true, nil
+	return orderId, nil
 }
 
 func (s *StoreService) UpdateProductById(productId int, product models.Product) (bool, error) {

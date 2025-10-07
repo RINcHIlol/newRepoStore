@@ -101,7 +101,7 @@ func MailToSeller(products []models.ProductCount, order models.Order, finalPrice
 
 	owner := mail.NewMessage()
 	owner.SetHeader("From", "galimatron229@gmail.com")
-	owner.SetHeader("To", order.CustomerEmail)
+	owner.SetHeader("To", "galimatron229@gmail.com") // Письмо приходит продавцу
 	owner.SetHeader("Subject", "Shopping in Svarka_Shop")
 
 	for i, tmpFile := range tmpFiles {

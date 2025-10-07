@@ -10,7 +10,7 @@ type Store interface {
 	AddCountProduct(productId int, count int) (int, error)
 	GetProducts() ([]models.Product, error)
 	GetProductById(productId int) (models.Product, error)
-	BuyProduct(order models.OrderRequest) (bool, error)
+	BuyProduct(order models.OrderRequest) (int, error)
 	UpdateProductById(productId int, product models.Product) (bool, error)
 }
 

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: #000000;
+            height: 60px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top-bar-content {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto 0;
+            padding: 0 20px;
+        }
+
+        .success-card {
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 2px solid #000000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #28a745;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background: #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .success-icon::after {
+            content: '✓';
+            font-size: 4rem;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .success-title {
+            font-family: Arial, sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .success-message {
+            font-family: Arial, sans-serif;
+            font-size: 1.3rem;
+            color: #333333;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .success-details {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 2px solid #000000;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-family: Arial, sans-serif;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .detail-label {
+            color: #333333;
+        }
+
+        .detail-value {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: Arial, sans-serif;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            border: 2px solid;
+        }
+
+        .btn-primary {
+            background: #28a745;
+            color: #ffffff;
+            border-color: #28a745;
+        }
+
+        .btn-primary:hover {
+            background: #218838;
+            border-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: #ffffff;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #28a745;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti:nth-child(2n) {
+            background: #ffc107;
+        }
+
+        .confetti:nth-child(3n) {
+            background: #dc3545;
+        }
+
+        .confetti:nth-child(4n) {
+            background: #007bff;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .success-card {
+                padding: 40px 20px;
+            }
+
+            .success-title {
+                font-size: 2.2rem;
+            }
+
+            .success-message {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-bar-content">Покупка завершена</div>
+    </div>
+
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon"></div>
+            
+            <h1 class="success-title">Покупка совершена!</h1>
+            
+            <p class="success-message">
+                Спасибо за покупку! Ваш заказ успешно обработан и будет доставлен в ближайшее время.
+            </p>
+
+            <div class="success-details">
+                <div class="detail-item">
+                    <span class="detail-label">Номер заказа:</span>
+                    <span class="detail-value" id="order-id">#12345</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Дата покупки:</span>
+                    <span class="detail-value" id="order-date"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Статус:</span>
+                    <span class="detail-value" style="color: #28a745;">Обработан</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary">Вернуться в магазин</a>
+                <a href="/cart" class="btn btn-secondary">Корзина</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        // Устанавливаем текущую дату
+        document.getElementById('order-date').textContent = new Date().toLocaleDateString('ru-RU');
+
+        // Получаем номер заказа из URL параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId') || 'unknown';
+        document.getElementById('order-id').textContent = '#' + orderId;
+
+        // Создаем конфетти
+        function createConfetti() {
+            const celebration = document.getElementById('celebration');
+            const colors = ['#28a745', '#ffc107', '#dc3545', '#007bff', '#6f42c1'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                celebration.appendChild(confetti);
+            }
+
+            // Удаляем конфетти через 5 секунд
+            setTimeout(() => {
+                celebration.innerHTML = '';
+            }, 5000);
+        }
+
+        // Запускаем конфетти при загрузке страницы
+        createConfetti();
+    </script>
+</body>
+</html>
+

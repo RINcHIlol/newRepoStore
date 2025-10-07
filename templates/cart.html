@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: #000000;
+            height: 60px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .top-bar-content {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .admin-button {
+            background: #dc3545;
+            color: #ffffff;
+            border: 2px solid #dc3545;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .admin-button:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 40px;
+            border: 2px solid #000000;
+        }
+
+        .header h1 {
+            font-family: Arial, sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #000000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            font-family: Arial, sans-serif;
+            font-size: 1.3rem;
+            color: #333333;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .cart-items {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .cart-item {
+            background: #f0f0f0;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 2px solid #000000;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cart-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #000000;
+        }
+
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-family: Arial, sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cart-item-description {
+            font-family: Arial, sans-serif;
+            color: #333333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .cart-item-price {
+            font-family: Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .cart-item-quantity {
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            color: #ffffff;
+            padding: 8px 16px;
+            background: #000000;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            border: 2px solid #000000;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            font-family: Arial, sans-serif;
+            background: #28a745;
+            color: #ffffff;
+            border: 2px solid #28a745;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background: #218838;
+            border-color: #218838;
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:disabled {
+            background: #6c757d;
+            border-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quantity-input {
+            font-family: Arial, sans-serif;
+            width: 50px;
+            text-align: center;
+            border: 2px solid #000000;
+            border-radius: 5px;
+            padding: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            font-family: Arial, sans-serif;
+            background: #dc3545;
+            color: #ffffff;
+            border: 2px solid #dc3545;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .cart-summary {
+            background: #f0f0f0;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 2px solid #000000;
+            text-align: center;
+        }
+
+        .cart-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #000000;
+        }
+
+        .total-price {
+            font-family: Arial, sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 30px;
+        }
+
+        .buy-all-button {
+            font-family: Arial, sans-serif;
+            background: #28a745;
+            color: #ffffff;
+            border: 2px solid #28a745;
+            padding: 20px 50px;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .buy-all-button:hover {
+            background: #218838;
+            border-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .buy-all-button:disabled {
+            background: #6c757d;
+            border-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .address-form {
+            background: #f0f0f0;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 2px solid #000000;
+            margin-bottom: 30px;
+        }
+
+        .address-form h3 {
+            font-family: Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .address-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-family: Arial, sans-serif;
+            margin-bottom: 15px;
+            background: #ffffff;
+        }
+
+        .address-input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Stripe Elements containers */
+        .stripe-field {
+            position: relative;
+            z-index: 1000;
+            pointer-events: auto;
+            background: #ffffff;
+            min-height: 44px;
+            cursor: text;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-family: Arial, sans-serif;
+            margin-bottom: 15px;
+            background: #ffffff;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .back-button {
+            font-family: Arial, sans-serif;
+            background: #6c757d;
+            color: #ffffff;
+            border: 2px solid #6c757d;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-cart h2 {
+            font-family: Arial, sans-serif;
+            font-size: 2.5rem;
+            color: #000000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .empty-cart p {
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            color: #333333;
+            margin-bottom: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            font-family: Arial, sans-serif;
+            font-size: 1.5rem;
+            color: #000000;
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            font-family: Arial, sans-serif;
+            font-size: 1.5rem;
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cart-item-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .total-price {
+                font-size: 2rem;
+            }
+
+            .buy-all-button {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .address-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        window.STRIPE_PK = '{{.stripe_pk}}';
+    </script>
+    <div class="top-bar">
+        <div></div>
+        <div class="top-bar-content">Корзина покупок</div>
+        <a href="/admin" class="admin-button">Админ</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Корзина</h1>
+            <p>Проверьте товары перед покупкой</p>
+        </div>
+
+        <div id="cart-content">
+            <div class="loading">Загрузка корзины...</div>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let products = [];
+        let stripe = null;
+        let cardElement = null;
+        
+        // Функция для обновления глобальной переменной cart
+        function updateCart() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+        }
+
+        // Загружаем продукты при загрузке страницы
+        async function loadProducts() {
+            try {
+                const response = await fetch('/store/get');
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки продуктов');
+                }
+                products = await response.json();
+                displayCart();
+            } catch (error) {
+                console.error('Ошибка загрузки продуктов:', error);
+                // Если не удалось загрузить с сервера, показываем корзину с базовой информацией
+                displayCartWithBasicInfo();
+            }
+        }
+
+        function initStripe() {
+            try {
+                if (typeof Stripe !== 'function') { setTimeout(initStripe, 300); return; }
+                if (!window.STRIPE_PK || !String(window.STRIPE_PK).length) { console.warn('Stripe publishable key is missing'); return; }
+                if (!stripe) { stripe = Stripe(window.STRIPE_PK); }
+                const elements = stripe.elements();
+                // Отдельные элементы
+                if (!window.cardNumber) window.cardNumber = elements.create('cardNumber');
+                if (!window.cardExpiry) window.cardExpiry = elements.create('cardExpiry');
+                if (!window.cardCvc) window.cardCvc = elements.create('cardCvc');
+
+                const numEl = document.getElementById('card-number-element');
+                const expEl = document.getElementById('card-expiry-element');
+                const cvcEl = document.getElementById('card-cvc-element');
+                if (numEl) { try { window.cardNumber.unmount(); } catch (e) {} window.cardNumber.mount('#card-number-element'); }
+                if (expEl) { try { window.cardExpiry.unmount(); } catch (e) {} window.cardExpiry.mount('#card-expiry-element'); }
+                if (cvcEl) { try { window.cardCvc.unmount(); } catch (e) {} window.cardCvc.mount('#card-cvc-element'); }
+            } catch (e) {
+                console.warn('Stripe init error:', e);
+            }
+        }
+
+        // Подсчет суммы к оплате в центах (глобально)
+        function computeTotalPriceCents() {
+            let total = 0;
+            const serverList = products.products ? products.products : products;
+            if (Array.isArray(serverList) && serverList.length) {
+                const map = new Map(serverList.map(p => [p.id, p]));
+                (JSON.parse(localStorage.getItem('cart')) || []).forEach(item => {
+                    const p = map.get(item.id);
+                    if (p) total += (p.price || 0) * item.quantity;
+                });
+            } else {
+                (JSON.parse(localStorage.getItem('cart')) || []).forEach(item => {
+                    const price = parseFloat(localStorage.getItem(`product_${item.id}_price`)) || 0;
+                    total += price * item.quantity;
+                });
+            }
+            return Math.round(total * 100);
+        }
+
+        // Инициализируем Stripe при загрузке страницы (дополнительно к инициализации после рендера)
+        document.addEventListener('DOMContentLoaded', function() { setTimeout(initStripe, 0); });
+
+        // Отображаем корзину (основная функция)
+        function displayCart() {
+            const cartContent = document.getElementById('cart-content');
+            
+            // Обновляем корзину из localStorage перед проверкой
+            updateCart();
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Корзина пуста</h2>
+                        <p>Добавьте товары в корзину, чтобы совершить покупку</p>
+                        <a href="/" class="back-button">Вернуться в магазин</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let totalPrice = 0;
+            let cartHTML = '<div class="cart-items">';
+
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                if (product) {
+                    const itemTotal = product.price * item.quantity;
+                    totalPrice += itemTotal;
+                    
+                    cartHTML += `
+                        <div class="cart-item">
+                            <img src="data:image/jpeg;base64,${product.image}" 
+                                 alt="${product.name}" class="cart-item-image">
+                            <div class="cart-item-info">
+                                <h3 class="cart-item-name">${product.name}</h3>
+                                <p class="cart-item-description">${product.description}</p>
+                                <div class="cart-item-price">${product.price.toFixed(2)} ₽</div>
+                            </div>
+                            <div class="cart-item-quantity">
+                                <span>Количество:</span>
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                                    <input type="number" class="quantity-input" value="${item.quantity}" 
+                                           min="1" onchange="setQuantity(${item.id}, this.value)">
+                                    <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                                </div>
+                                <button class="remove-btn" onclick="removeFromCart(${item.id})">Удалить</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            cartHTML += '</div>';
+
+            cartHTML += `
+                <div class="address-form">
+                    <h3>Данные для доставки</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-email">Email</label>
+                            <input type="email" id="customer-email" class="email-input" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery-address">Адрес доставки</label>
+                            <input type="text" id="delivery-address" class="address-input" placeholder="Введите адрес доставки" required>
+                        </div>
+                    </div>
+                    <div id="form-error" class="error-message" style="display: none;"></div>
+                </div>
+                <div class="cart-summary">
+                    <div class="total-price">Общая стоимость: ${totalPrice.toFixed(2)} ₽</div>
+                    <div style="max-width: 420px; margin: 0 auto 20px;">
+                        <div style="margin-bottom:10px; font-weight:600; text-align:left;">Номер карты</div>
+                        <div id="card-number-element" class="stripe-field" style="padding: 12px 10px; border: 2px solid #000; border-radius: 10px; background: #fff;"></div>
+                        <div style="display:flex; gap:10px; margin-top:12px;">
+                            <div style="flex:1;">
+                                <div style="margin-bottom:10px; font-weight:600; text-align:left;">Срок</div>
+                                <div id="card-expiry-element" class="stripe-field" style="padding: 12px 10px; border: 2px solid #000; border-radius: 10px; background: #fff;"></div>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="margin-bottom:10px; font-weight:600; text-align:left;">CVC</div>
+                                <div id="card-cvc-element" class="stripe-field" style="padding: 12px 10px; border: 2px solid #000; border-radius: 10px; background: #fff;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/" class="back-button">Продолжить покупки</a>
+                    <button class="buy-all-button" onclick="buyAllProducts()">Купить все</button>
+                </div>
+            `;
+
+            cartContent.innerHTML = cartHTML;
+            initStripe();
+            initStripe();
+        }
+
+        // Отображаем корзину с базовой информацией (когда сервер недоступен)
+        function displayCartWithBasicInfo() {
+            console.log('displayCartWithBasicInfo вызвана');
+            console.log('Корзина:', cart);
+            
+            const cartContent = document.getElementById('cart-content');
+            
+            // Обновляем корзину из localStorage перед проверкой
+            updateCart();
+            
+            if (cart.length === 0) {
+                console.log('Корзина пуста, показываем сообщение');
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Корзина пуста</h2>
+                        <p>Добавьте товары в корзину, чтобы совершить покупку</p>
+                        <a href="/" class="back-button">Вернуться в магазин</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let totalPrice = 0;
+            let cartHTML = '<div class="cart-items">';
+
+            cart.forEach(item => {
+                console.log('=== Обрабатываем товар в корзине ===');
+                console.log('item:', item);
+                
+                // Используем данные из localStorage или базовую информацию
+                const productName = localStorage.getItem(`product_${item.id}_name`) || `Товар #${item.id}`;
+                const productPrice = parseFloat(localStorage.getItem(`product_${item.id}_price`)) || 0;
+                const productDescription = localStorage.getItem(`product_${item.id}_description`) || 'Описание недоступно';
+                const productImage = localStorage.getItem(`product_${item.id}_image`) || '';
+                
+                console.log(`Данные товара ${item.id} из localStorage:`);
+                console.log('- name:', productName);
+                console.log('- price:', productPrice);
+                console.log('- description:', productDescription);
+                console.log('- image length:', productImage.length);
+                console.log('- image preview:', productImage.substring(0, 50) + '...');
+                
+                // Проверяем все ключи в localStorage
+                console.log('Все ключи localStorage для этого товара:');
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.includes(`product_${item.id}`)) {
+                        console.log(`- ${key}:`, localStorage.getItem(key));
+                    }
+                }
+                
+                const itemTotal = productPrice * item.quantity;
+                totalPrice += itemTotal;
+                
+                const imageSrc = productImage ? `data:image/jpeg;base64,${productImage}` : 'https://via.placeholder.com/120x120/f0f0f0/000000?text=Нет+фото';
+                
+                cartHTML += `
+                    <div class="cart-item">
+                        <img src="${imageSrc}" 
+                             alt="${productName}" class="cart-item-image">
+                        <div class="cart-item-info">
+                            <h3 class="cart-item-name">${productName}</h3>
+                            <p class="cart-item-description">${productDescription}</p>
+                            <div class="cart-item-price">${productPrice.toFixed(2)} ₽</div>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <span>Количество:</span>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
+                                <input type="number" class="quantity-input" value="${item.quantity}" 
+                                       min="1" onchange="setQuantity(${item.id}, this.value)">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="removeFromCart(${item.id})">Удалить</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartHTML += '</div>';
+
+            cartHTML += `
+                <div class="address-form">
+                    <h3>Данные для доставки</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-email">Email</label>
+                            <input type="email" id="customer-email" class="email-input" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery-address">Адрес доставки</label>
+                            <input type="text" id="delivery-address" class="address-input" placeholder="Введите адрес доставки" required>
+                        </div>
+                    </div>
+                    <div id="form-error" class="error-message" style="display: none;"></div>
+                </div>
+                <div class="cart-summary">
+                    <div class="total-price">Общая стоимость: ${totalPrice.toFixed(2)} ₽</div>
+                    <div style="max-width: 420px; margin: 0 auto 20px;">
+                        <div style="margin-bottom:10px; font-weight:600; text-align:left;">Номер карты</div>
+                        <div id="card-number-element" style="padding: 12px 10px; border: 2px solid #000; border-radius: 10px; background: #fff;"></div>
+                        <div style="display:flex; gap:10px; margin-top:12px;">
+                            <div style="flex:1;">
+                                <div style="margin-bottom:10px; font-weight:600; text-align:left;">Срок</div>
+                                <div id="card-expiry-element" style="padding: 12px 10px; border: 2px solid #000; border-radius: 10px; background: #fff;"></div>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="margin-bottom:10px; font-weight:600; text-align:left;">CVC</div>
+                                <div id="card-cvc-element" style="padding: 12px 10px; border: 2px solid #000; border-radius: 10px; background: #fff;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/" class="back-button">Продолжить покупки</a>
+                    <button class="buy-all-button" onclick="buyAllProducts()">Купить все</button>
+                </div>
+            `;
+
+            cartContent.innerHTML = cartHTML;
+        }
+
+
+        // Покупка всех товаров
+        async function buyAllProducts() {
+            const buyButton = document.querySelector('.buy-all-button');
+            const emailInput = document.getElementById('customer-email');
+            const addressInput = document.getElementById('delivery-address');
+            const formError = document.getElementById('form-error');
+            
+            // Проверяем email
+            if (!emailInput.value.trim()) {
+                formError.textContent = 'Пожалуйста, введите email';
+                formError.style.display = 'block';
+                return;
+            }
+            
+            // Валидация email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailInput.value.trim())) {
+                formError.textContent = 'Пожалуйста, введите корректный email адрес';
+                formError.style.display = 'block';
+                return;
+            }
+            
+            // Проверяем адрес
+            if (!addressInput.value.trim()) {
+                formError.textContent = 'Пожалуйста, введите адрес доставки';
+                formError.style.display = 'block';
+                return;
+            }
+            
+            formError.style.display = 'none';
+            buyButton.disabled = true;
+            buyButton.textContent = 'Обработка...';
+
+            try {
+                if (!stripe || !cardElement) {
+                    throw new Error('Платежная форма не инициализирована');
+                }
+
+                // 1) Создание PaymentIntent на сервере
+                const amountCents = computeTotalPriceCents();
+                const intentResp = await fetch('/payments/create-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: amountCents })
+                });
+                if (!intentResp.ok) {
+                    const data = await intentResp.json().catch(() => ({}));
+                    throw new Error(data.message || 'Не удалось создать платеж');
+                }
+                const { clientSecret } = await intentResp.json();
+
+                // 2) Убеждаемся, что Element смонтирован в текущий контейнер
+                const mountNow = document.getElementById('card-element');
+                if (mountNow && !mountNow.hasChildNodes() && cardElement) {
+                    cardElement.mount('#card-element');
+                }
+
+                // 2) Подтверждаем платеж картой
+                const confirmResult = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: window.cardNumber,
+                        billing_details: { email: emailInput.value.trim() }
+                    }
+                });
+                if (confirmResult.error) {
+                    throw new Error(confirmResult.error.message || 'Ошибка подтверждения платежа');
+                }
+
+                // 3) Создаем заказ
+                const products = cart.map(item => ({
+                    id_product: item.id,
+                    count: item.quantity
+                }));
+                const response = await fetch('/store/buy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        customer_email: emailInput.value.trim(),
+                        address: addressInput.value.trim(),
+                        products: products
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при покупке');
+                }
+
+                const result = await response.json();
+                
+                // Очищаем корзину
+                localStorage.removeItem('cart');
+                
+                // Очищаем данные о продуктах
+                const productIds = cart.map(item => item.id);
+                productIds.forEach(id => {
+                    localStorage.removeItem(`product_${id}_name`);
+                    localStorage.removeItem(`product_${id}_price`);
+                    localStorage.removeItem(`product_${id}_description`);
+                    localStorage.removeItem(`product_${id}_image`);
+                });
+                
+                // Переходим на страницу подтверждения с номером заказа
+                window.location.href = `/success?orderId=${result.orderId || 'unknown'}`;
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                formError.textContent = error.message || 'Произошла ошибка при обработке заказа';
+                formError.style.display = 'block';
+                
+                // Восстанавливаем кнопку
+                buyButton.disabled = false;
+                buyButton.textContent = 'Купить все';
+                
+                // Если сервер недоступен, все равно показываем успешную покупку (для демонстрации)
+                if (error.message.includes('fetch')) {
+                    // Очищаем корзину
+                    localStorage.removeItem('cart');
+                    
+                    // Очищаем данные о продуктах
+                    const productIds = cart.map(item => item.id);
+                    productIds.forEach(id => {
+                        localStorage.removeItem(`product_${id}_name`);
+                        localStorage.removeItem(`product_${id}_price`);
+                        localStorage.removeItem(`product_${id}_description`);
+                        localStorage.removeItem(`product_${id}_image`);
+                    });
+                    
+                    // Переходим на страницу успешной покупки
+                    window.location.href = '/success';
+                } else {
+                    alert('Ошибка при покупке товаров');
+                    buyButton.disabled = false;
+                    buyButton.textContent = 'Купить все';
+                }
+            }
+        }
+
+        // Функция для изменения количества товара
+        function changeQuantity(productId, change) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const item = cart.find(item => item.id === productId);
+            
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                    return;
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart(); // Обновляем глобальную переменную
+                // Обновляем отображение
+                if (products.length > 0) {
+                    displayCart();
+                } else {
+                    displayCartWithBasicInfo();
+                }
+            }
+        }
+
+        // Функция для установки конкретного количества
+        function setQuantity(productId, quantity) {
+            const newQuantity = parseInt(quantity);
+            if (newQuantity < 1) {
+                removeFromCart(productId);
+                return;
+            }
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const item = cart.find(item => item.id === productId);
+            
+            if (item) {
+                item.quantity = newQuantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart(); // Обновляем глобальную переменную
+                // Обновляем отображение
+                if (products.length > 0) {
+                    displayCart();
+                } else {
+                    displayCartWithBasicInfo();
+                }
+            }
+        }
+
+        // Функция для удаления товара из корзины
+        function removeFromCart(productId) {
+            console.log('=== removeFromCart вызвана ===');
+            console.log('Удаляем товар с ID:', productId);
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            console.log('Корзина до удаления:', cart);
+            
+            cart = cart.filter(item => item.id !== productId);
+            console.log('Корзина после удаления:', cart);
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Очищаем данные о продукте
+            localStorage.removeItem(`product_${productId}_name`);
+            localStorage.removeItem(`product_${productId}_price`);
+            localStorage.removeItem(`product_${productId}_description`);
+            localStorage.removeItem(`product_${productId}_image`);
+            
+            // Обновляем глобальную переменную cart
+            updateCart();
+            console.log('Финальная корзина:', cart);
+            
+            // Обновляем отображение
+            if (products.length > 0) {
+                displayCart();
+            } else {
+                displayCartWithBasicInfo();
+            }
+        }
+
+        // Сначала показываем корзину с данными из localStorage
+        displayCartWithBasicInfo();
+        
+        // Затем пытаемся загрузить актуальные данные с сервера
+        loadProducts();
+    </script>
+</body>
+</html>

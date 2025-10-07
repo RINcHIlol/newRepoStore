@@ -1,10 +1,10 @@
 package storeApi
 
 import (
-	"fmt"
-	"github.com/stripe/stripe-go"
-	"github.com/stripe/stripe-go/paymentintent"
-	"os"
+    "fmt"
+    "github.com/stripe/stripe-go"
+    "github.com/stripe/stripe-go/paymentintent"
+    "os"
 )
 
 func PaymentEvent(sum int) error {
@@ -37,4 +37,22 @@ func PaymentEvent(sum int) error {
 	fmt.Println("Клиентский секрет:", pi.ClientSecret)
 
 	return nil
+}
+
+// CreatePaymentIntent создает реальный PaymentIntent и возвращает client_secret
+func CreatePaymentIntent(amount int64) (string, error) {
+    stripeKey := os.Getenv("STRIPE_SECRET_KEY")
+    if stripeKey == "" {
+        return "", fmt.Errorf("STRIPE_SECRET_KEY не задана")
+    }
+    stripe.Key = stripeKey
+
+    pi, err := paymentintent.New(&stripe.PaymentIntentParams{
+        Amount:   stripe.Int64(amount),
+        Currency: stripe.String(string(stripe.CurrencyUSD)),
+    })
+    if err != nil {
+        return "", err
+    }
+    return pi.ClientSecret, nil
 }

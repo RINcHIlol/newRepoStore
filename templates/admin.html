@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: #000000;
+            height: 60px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .top-bar-content {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .back-button {
+            background: #6c757d;
+            color: #ffffff;
+            border: 2px solid #6c757d;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto 0;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: #f0f0f0;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 40px;
+            border: 2px solid #000000;
+        }
+
+        .header h1 {
+            font-family: Arial, sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #000000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            font-family: Arial, sans-serif;
+            font-size: 1.3rem;
+            color: #333333;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .admin-form {
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 2px solid #000000;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #000000;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            border-color: #28a745;
+            background: #f8f9fa;
+        }
+
+        .file-input:focus + .file-input-label {
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            border: 2px solid #000000;
+        }
+
+        .submit-button {
+            font-family: Arial, sans-serif;
+            background: #28a745;
+            color: #ffffff;
+            border: 2px solid #28a745;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background: #218838;
+            border-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .submit-button:disabled {
+            background: #6c757d;
+            border-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .admin-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="/" class="back-button">Назад</a>
+        <div class="top-bar-content">Админ-панель</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Добавить товар</h1>
+            <p>Заполните форму для добавления нового товара в магазин</p>
+        </div>
+
+        <div class="admin-form">
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-name">Название товара</label>
+                    <input type="text" id="product-name" class="form-input" placeholder="Введите название товара" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-price">Цена</label>
+                    <input type="number" id="product-price" class="form-input" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-description">Описание</label>
+                    <textarea id="product-description" class="form-textarea" placeholder="Введите описание товара" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-count">Количество</label>
+                    <input type="number" id="product-count" class="form-input" placeholder="0" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-image">Изображение товара</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="product-image" class="file-input" accept="image/*" required>
+                        <label for="product-image" class="file-input-label">
+                            Выберите изображение или перетащите файл сюда
+                        </label>
+                    </div>
+                    <div id="image-preview" class="image-preview"></div>
+                </div>
+
+                <div id="form-message"></div>
+
+                <button type="submit" class="submit-button" id="submit-btn">
+                    Добавить товар
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Предварительный просмотр изображения
+        document.getElementById('product-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('image-preview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Предварительный просмотр">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+            }
+        });
+
+        // Обработка отправки формы
+        document.getElementById('product-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const messageDiv = document.getElementById('form-message');
+            
+            // Получаем данные формы
+            const formData = new FormData();
+            formData.append('name', document.getElementById('product-name').value);
+            formData.append('price', document.getElementById('product-price').value);
+            formData.append('description', document.getElementById('product-description').value);
+            formData.append('count', document.getElementById('product-count').value);
+            formData.append('image', document.getElementById('product-image').files[0]);
+            
+            // Блокируем кнопку
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Добавление...';
+            messageDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/store/add', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка при добавлении товара');
+                }
+                
+                const result = await response.json();
+                
+                // Показываем успешное сообщение
+                messageDiv.innerHTML = '<div class="success-message">Товар успешно добавлен!</div>';
+                
+                // Очищаем форму
+                document.getElementById('product-form').reset();
+                document.getElementById('image-preview').innerHTML = '';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                messageDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
+            } finally {
+                // Восстанавливаем кнопку
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Добавить товар';
+            }
+        });
+    </script>
+</body>
+</html>
+
