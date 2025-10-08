@@ -12,6 +12,7 @@ type Store interface {
 	GetProductById(productId int) (models.Product, error)
 	BuyProduct(order models.OrderRequest) (int, error)
 	UpdateProductById(productId int, product models.Product) (bool, error)
+	DeleteProductById(productId int) (models.Product, error)
 }
 
 type Service struct {

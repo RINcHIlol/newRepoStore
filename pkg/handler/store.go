@@ -137,6 +137,21 @@ func (h *Handler) buyProduct(c *gin.Context) {
 	})
 }
 
+func (h *Handler) deleteProduct(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("id"))
+
+	product, err := h.services.Store.DeleteProductById(productId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"product": product,
+	})
+}
+
+
 // createPaymentIntent создает PaymentIntent в Stripe и возвращает client_secret
 func (h *Handler) createPaymentIntent(c *gin.Context) {
     var req struct {

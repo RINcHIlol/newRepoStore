@@ -102,14 +102,21 @@ func (p *StoreMySql) GetProductsByIds(productIds []int) ([]models.Product, error
 func (p *StoreMySql) DeleteProductById(productId int) (models.Product, error) {
 	var product models.Product
 
-	querySelect := `SELECT id, name, price, description, image, count FROM products WHERE id = ?`
+	// Сначала получаем продукт
+	querySelect := `SELECT id, name, price, description, image, count, is_deleted FROM products WHERE id = ?`
 	err := p.db.Get(&product, querySelect, productId)
 	if err != nil {
 		return models.Product{}, err
 	}
 
-	queryDelete := `DELETE FROM products WHERE id = ?`
-	result, err := p.db.Exec(queryDelete, productId)
+	// Проверяем, не удалён ли уже продукт
+	if product.IsDeleted {
+		return product, fmt.Errorf("product with id %d is already deleted", productId)
+	}
+
+	// "Мягкое удаление" — меняем is_deleted = TRUE
+	queryUpdate := `UPDATE products SET is_deleted = TRUE WHERE id = ?`
+	result, err := p.db.Exec(queryUpdate, productId)
 	if err != nil {
 		return models.Product{}, err
 	}
@@ -122,8 +129,37 @@ func (p *StoreMySql) DeleteProductById(productId int) (models.Product, error) {
 		return models.Product{}, fmt.Errorf("no product with id %d found", productId)
 	}
 
+	// Обновляем значение в возвращаемой структуре
+	product.IsDeleted = true
+
 	return product, nil
 }
+
+// func (p *StoreMySql) DeleteProductById(productId int) (models.Product, error) {
+// 	var product models.Product
+
+// 	querySelect := `SELECT id, name, price, description, image, count FROM products WHERE id = ?`
+// 	err := p.db.Get(&product, querySelect, productId)
+// 	if err != nil {
+// 		return models.Product{}, err
+// 	}
+
+// 	queryDelete := `DELETE FROM products WHERE id = ?`
+// 	result, err := p.db.Exec(queryDelete, productId)
+// 	if err != nil {
+// 		return models.Product{}, err
+// 	}
+
+// 	rowsAffected, err := result.RowsAffected()
+// 	if err != nil {
+// 		return models.Product{}, err
+// 	}
+// 	if rowsAffected == 0 {
+// 		return models.Product{}, fmt.Errorf("no product with id %d found", productId)
+// 	}
+
+// 	return product, nil
+// }
 
 func (p *StoreMySql) UpdateProductById(productId int, product models.Product) (bool, error) {
 	query := `

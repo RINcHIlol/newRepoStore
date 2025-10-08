@@ -32,6 +32,10 @@ func (s *StoreService) GetProductById(productId int) (models.Product, error) {
 	return s.repo.GetProductById(productId)
 }
 
+func (s *StoreService) DeleteProductById(productId int) (models.Product, error) {
+	return s.repo.DeleteProductById(productId)
+}
+
 func (s *StoreService) BuyProduct(orderReq models.OrderRequest) (int, error) {
 	var finalPrice float64
 	orderId, err := s.repo.CreateOrder(orderReq)

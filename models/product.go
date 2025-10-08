@@ -9,4 +9,5 @@ type Product struct {
 	Description string          `json:"description" binding:"required" db:"description"`
 	Image       []byte          `json:"image" binding:"required" db:"image"`
 	Count       sql.NullInt64   `json:"count" db:"count"`
+	IsDeleted   bool            `json:"is_deleted" db:"is_deleted"`
 }
